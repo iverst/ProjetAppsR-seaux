@@ -11,9 +11,9 @@ public class Test {
         //testString();
         //testString2();
         //testInterpreter();
-        //testRequest();
+        testRequest();
         //testInterpreter2();
-        testMessage();
+        //testMessage();
     }
 
     public static void testString() {

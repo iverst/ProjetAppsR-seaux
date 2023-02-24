@@ -1,7 +1,9 @@
+package App;
+
+import App.Message;
 import Requests.Request;
 import Requests.RequestInsterpreter;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 public class Test {

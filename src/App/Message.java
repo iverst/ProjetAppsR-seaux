@@ -1,3 +1,5 @@
+package App;
+
 public class Message {
     private String content;
     private int id;

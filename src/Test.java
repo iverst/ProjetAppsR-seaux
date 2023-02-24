@@ -1,13 +1,17 @@
 import Requests.Request;
 import Requests.RequestInsterpreter;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 public class Test {
     public static void main(String[] args) {
         //testString();
         //testString2();
         //testInterpreter();
-        testRequest();
+        //testRequest();
         //testInterpreter2();
+        testMessage();
     }
 
     public static void testString() {
@@ -45,6 +49,23 @@ public class Test {
         System.out.println(request.getParameter("nothing"));
         System.out.println("test response");
         System.out.println(request.getReponse());
+    }
+
+    public static void testMessage() {
+        try {
+            Message message = new Message("Ceci est un message", 10);
+            System.out.println(message.getContent());
+            System.out.println(message.getId());
+            message = new Message("Ceci est un second message", 10, new String[]{"#message", "#test"});
+            System.out.println(Arrays.toString(message.getTags()));
+
+            message = new Message("Ceci est un très long message  Ceci est un très long message Ceci est un très long message Ceci est un très long message Ceci est un très long message Ceci est un très long message Ceci est un très long messageCeci est un très long message Ceci est un très long message Ceci est un très long message Ceci est un très long message Ceci est un très long message Ceci est un très long message", 10);
+
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 

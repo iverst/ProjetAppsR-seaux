@@ -17,17 +17,14 @@ public class Request {
     private void format(String request) {
         String[] headerbody = request.split("\r\n");
         String[] header = headerbody[0].split(" ");
+        body = headerbody[1];
         checkFormat(headerbody);
 
-        System.out.println(headerbody[0]);
-        System.out.println(headerbody[1]);
-        System.out.println(headerbody.length);
         RequestInsterpreter requestInsterpreter = new RequestInsterpreter();
         for (int i = 1; i < header.length; i++) {
             String[] paramater = requestInsterpreter.divide(":", header[i]);
             parameters.put(paramater[0], paramater[1]);
         }
-        System.out.println(parameters);
     }
 
     public String getParameter(String parameter) {

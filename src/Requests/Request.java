@@ -43,4 +43,8 @@ public class Request {
     public String getType() {
         return header[0];
     }
+
+    public String[] getParameterFormat() {
+        return parameterFormat;
+    }
 }

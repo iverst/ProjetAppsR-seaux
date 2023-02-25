@@ -1,7 +1,7 @@
 package App;
 
 import Requests.Request;
-import Requests.RequestInsterpreter;
+import Requests.RequestInterpreter;
 import Requests.RequestMaker;
 
 import java.util.ArrayList;
@@ -42,8 +42,8 @@ public class Test {
     }
 
     public static void testInterpreter2() {
-        RequestInsterpreter requestInsterpreter = new RequestInsterpreter();
-        String[] request = requestInsterpreter.divide(":", "id:tesutsbuce");
+        RequestInterpreter requestInterpreter = new RequestInterpreter();
+        String[] request = requestInterpreter.divide(":", "id:tesutsbuce");
         System.out.println(request[0]);
         System.out.println(request[1]);
 

@@ -1,6 +1,6 @@
 package Requests;
 
-public class RequestInsterpreter {
+public class RequestInterpreter {
 
 
     public String[] divide(String divider, String word) {

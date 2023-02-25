@@ -1,7 +1,5 @@
 package Requests;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class Request {
@@ -29,10 +27,10 @@ public class Request {
         header = headerbody[0].split(" ");
         body = headerbody[1];
 
-        RequestInsterpreter requestInsterpreter = new RequestInsterpreter();
+        RequestInterpreter requestInterpreter = new RequestInterpreter();
         parameterFormat = new String[header.length - 1];
         for (int i = 1; i < header.length; i++) {
-            String[] paramater = requestInsterpreter.divide(":", header[i]);
+            String[] paramater = requestInterpreter.divide(":", header[i]);
             if (paramater == null) {
                 System.out.println("null parameter");
                 System.out.println(header[i]);

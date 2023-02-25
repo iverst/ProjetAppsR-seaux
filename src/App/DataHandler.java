@@ -22,6 +22,10 @@ public class DataHandler {
 
     public String getResponse() {
         Request request = new Request(data);
+        if (request.isInvalidRequest()) {
+            return "ERROR \r\n invalid request format \r\n";
+        }
+
         switch (request.getType()) {
             case "PUBLISH":
                 return publish(request);
@@ -36,7 +40,7 @@ public class DataHandler {
 
     private String publish(Request request) {
         String[] parametersFormat = request.getParameterFormat();
-        if (parametersFormat.length != 1 && !parametersFormat[0].equals("author")) {
+        if (parametersFormat.length != 1 || !parametersFormat[0].equals("author")) {
             return new RequestMaker().getRequest("ERROR", "Bad request format");
         }
         MessageDataBase.getInstance().publishMessage(request.getParameter("user"), request.getBody());

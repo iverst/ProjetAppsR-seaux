@@ -8,6 +8,7 @@ public class MessageDataBase {
     private ArrayList<Message> messages = new ArrayList<>();
     private HashMap<String, ArrayList<Message>> userMessages = new HashMap<>();
     private HashMap<String, ArrayList<Message>> tags = new HashMap<>();
+    private static MessageDataBase instance;
 
     public boolean publishMessage(String user, String content) {
         Message message;
@@ -77,5 +78,12 @@ public class MessageDataBase {
 
     public ArrayList<Message> getMessages() {
         return messages;
+    }
+
+    public static MessageDataBase getInstance() {
+        if (instance == null) {
+            instance = new MessageDataBase();
+        }
+        return instance;
     }
 }

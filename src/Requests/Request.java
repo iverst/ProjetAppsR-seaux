@@ -42,4 +42,8 @@ public class Request {
     public String[] getParameterFormat() {
         return parameterFormat;
     }
+
+    public String getBody() {
+        return body;
+    }
 }

@@ -29,7 +29,6 @@ public class Request {
             parameterFormat[i - 1] = paramater[0];
             parameters.put(paramater[0], paramater[1]);
         }
-        System.out.println(Arrays.toString(parameterFormat));
     }
 
     public String getParameter(String parameter) {

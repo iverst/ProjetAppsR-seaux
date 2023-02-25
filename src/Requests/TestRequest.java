@@ -1,8 +1,12 @@
 package Requests;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 public class TestRequest {
     public static void main(String[] args) {
-        testPublishRequest();
+        //testPublishRequest();
+        testRequestMaker();
     }
     public static void testRequest() {
         Request request = new Request("RCV_IDS author:@user tag:#tag since_id:1345 limit:n \r\nCeci est le message \r\n");
@@ -14,5 +18,17 @@ public class TestRequest {
     public static void testPublishRequest() {
         Request request = new PublishRequest("RCV_IDS author:@user  \r\nCeci est le message \r\n");
         System.out.println(request.checkFormat());
+    }
+
+    public static void testRequestMaker() {
+        RequestMaker requestMaker = new RequestMaker();
+        //String data = requestMaker.getRequest("testrequest", "Corps du message");
+        //String data = requestMaker.getRequest("testrequest user:@user tag:#big", "Corps du message");
+        String data = requestMaker.getRequest(new String[]{"testrequest", "user:@user","  tag:#big"}, "Corps du message");
+
+        System.out.println(data);
+        Request request = new Request(data);
+        System.out.println(request.getType());
+        System.out.println(Arrays.toString(request.getParameterFormat()));
     }
 }

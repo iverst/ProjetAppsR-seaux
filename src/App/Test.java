@@ -4,7 +4,9 @@ import App.Message;
 import Requests.Request;
 import Requests.RequestInsterpreter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class Test {
     public static void main(String[] args) {
@@ -14,6 +16,8 @@ public class Test {
         //testRequest();
         //testInterpreter2();
         //testMessage();
+        //testHashMap();
+        testMessageDB();
     }
 
     public static void testString() {
@@ -57,8 +61,7 @@ public class Test {
             Message message = new Message("Ceci est un message", 10);
             System.out.println(message.getContent());
             System.out.println(message.getId());
-            message = new Message("Ceci est un second message", 10, new String[]{"#message", "#test"});
-            System.out.println(Arrays.toString(message.getTags()));
+            message = new Message("Ceci est un second message", 10);
 
             message = new Message("Ceci est un très long message  Ceci est un très long message Ceci est un très long message Ceci est un très long message Ceci est un très long message Ceci est un très long message Ceci est un très long messageCeci est un très long message Ceci est un très long message Ceci est un très long message Ceci est un très long message Ceci est un très long message Ceci est un très long message", 10);
 
@@ -67,6 +70,37 @@ public class Test {
         catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void testHashMap() {
+        HashMap<String, String> key = new HashMap<>();
+        key.put("k1", "v1");
+        key.put("k1", "v2");
+        System.out.println(key.get("k1"));
+        HashMap<String, ArrayList<String>> keyArray = new HashMap<>();
+        ArrayList<String> arrayList = new ArrayList<>();
+        arrayList.add("v1");
+        keyArray.put("k1", arrayList);
+        ArrayList<String> arrayList2 = keyArray.get("k1");
+        arrayList2.add("v2");
+        keyArray.put("k1", arrayList2);
+        System.out.println(keyArray.get("k1"));
+        ArrayList<String> arrayList3 = keyArray.get("jdjdj");
+        System.out.println(arrayList3 == null);
+    }
+
+    public static void testMessageDB() {
+        MessageDataBase messageDataBase = new MessageDataBase();
+        messageDataBase.publishMessage("@kebab", "un grand message");
+        messageDataBase.publishMessage("@kebab", "un second grand message");
+        messageDataBase.publishMessage("@patrick", "eh bah oui !");
+
+        System.out.println(messageDataBase.getMessages());
+        System.out.println(messageDataBase.getUserMessages("@kebab"));
+        System.out.println(messageDataBase.getUserMessages("@patrick"));
+        System.out.println(messageDataBase.getUserMessages("@personne"));
+
+
     }
 }
 

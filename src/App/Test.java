@@ -11,7 +11,7 @@ public class Test {
         //testString();
         //testString2();
         //testInterpreter();
-        testRequest();
+        //testRequest();
         //testInterpreter2();
         //testMessage();
     }
@@ -50,7 +50,6 @@ public class Test {
         System.out.println(request.getParameter("tag"));
         System.out.println(request.getParameter("nothing"));
         System.out.println("test response");
-        System.out.println(request.getReponse());
     }
 
     public static void testMessage() {

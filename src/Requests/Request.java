@@ -36,10 +36,6 @@ public class Request {
         return parameters.get(parameter);
     }
 
-    public String getReponse() {
-        return response[0] + "\r\n" + response[1] + "\r\n";
-    }
-
     public String getType() {
         return header[0];
     }

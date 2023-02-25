@@ -2,6 +2,7 @@ package App;
 
 import Requests.Request;
 import Requests.RequestInsterpreter;
+import Requests.RequestMaker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +17,8 @@ public class Test {
         //testMessage();
         //testHashMap();
         //testMessageDBUser();
-        testMessageTags();
+        //testMessageTags();
+        testDataHandler();
     }
 
     public static void testString() {
@@ -110,9 +112,14 @@ public class Test {
         System.out.println(messageDataBase.getMessagesByTag("#message"));
         System.out.println(messageDataBase.getMessagesByTag("#big"));
         System.out.println(messageDataBase.getMessagesByTag("#giant"));
-
-
     }
+
+    public static void testDataHandler() {
+        DataHandler dataHandler = new DataHandler(new RequestMaker().getRequest("RCV_IDS author:@user"," "));
+        System.out.println(dataHandler.getResponse());
+    }
+
+
 }
 
 

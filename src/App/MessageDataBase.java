@@ -20,9 +20,15 @@ public class MessageDataBase {
         id++;
         messages.add(message);
         addMessageUser(user, message);
-
+        addMessageTags(message);
         return true;
     }
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     private void addMessageUser(String user, Message message) {
@@ -38,8 +44,35 @@ public class MessageDataBase {
         }
     }
 
+    private void addMessageTags(Message message) {
+        String content = message.getContent();
+        String[] words = content.split(" ");
+        for (String word :  words) {
+            if (word.charAt(0) == '#') {
+                addTag(word, message);
+            }
+        }
+    }
+
+    private void addTag(String tag, Message message) {
+        ArrayList<Message> messages = tags.get(tag);
+        if (messages == null) {
+            messages = new ArrayList<>();
+            messages.add(message);
+            tags.put(tag, messages);
+        }
+        else {
+            messages.add(message);
+            tags.put(tag, messages);
+        }
+    }
+
     public ArrayList<Message> getUserMessages(String user) {
         return userMessages.get(user);
+    }
+
+    public ArrayList<Message> getMessagesByTag(String tag) {
+        return tags.get(tag);
     }
 
     public ArrayList<Message> getMessages() {

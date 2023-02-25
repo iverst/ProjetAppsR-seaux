@@ -1,11 +1,9 @@
 package App;
 
-import App.Message;
 import Requests.Request;
 import Requests.RequestInsterpreter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class Test {
@@ -17,7 +15,8 @@ public class Test {
         //testInterpreter2();
         //testMessage();
         //testHashMap();
-        testMessageDB();
+        //testMessageDBUser();
+        testMessageTags();
     }
 
     public static void testString() {
@@ -89,7 +88,7 @@ public class Test {
         System.out.println(arrayList3 == null);
     }
 
-    public static void testMessageDB() {
+    public static void testMessageDBUser() {
         MessageDataBase messageDataBase = new MessageDataBase();
         messageDataBase.publishMessage("@kebab", "un grand message");
         messageDataBase.publishMessage("@kebab", "un second grand message");
@@ -99,6 +98,18 @@ public class Test {
         System.out.println(messageDataBase.getUserMessages("@kebab"));
         System.out.println(messageDataBase.getUserMessages("@patrick"));
         System.out.println(messageDataBase.getUserMessages("@personne"));
+    }
+
+    public static void testMessageTags() {
+        MessageDataBase messageDataBase = new MessageDataBase();
+        messageDataBase.publishMessage("@kebab", "un grand message #big #message");
+        messageDataBase.publishMessage("@kebab", "un second grand message");
+        messageDataBase.publishMessage("@patrick", "eh bah oui ! #message");
+
+        System.out.println(messageDataBase.getMessages());
+        System.out.println(messageDataBase.getMessagesByTag("#message"));
+        System.out.println(messageDataBase.getMessagesByTag("#big"));
+        System.out.println(messageDataBase.getMessagesByTag("#giant"));
 
 
     }

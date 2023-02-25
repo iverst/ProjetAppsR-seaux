@@ -1,5 +1,7 @@
 package Requests;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Request {
@@ -19,7 +21,10 @@ public class Request {
 
     private void format(String request) {
         String[] headerbody = request.split("\r\n");
-        if(headerbody.length != 2) {
+        if (headerbody.length == 1) {
+            headerbody = new String[]{headerbody[0], " "};
+        }
+        else if(headerbody.length != 2) {
             invalidRequest = true;
             System.out.println("header body problem");
             return;

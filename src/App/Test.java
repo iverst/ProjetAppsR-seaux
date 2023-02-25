@@ -115,7 +115,7 @@ public class Test {
     }
 
     public static void testDataHandler() {
-        DataHandler dataHandler = new DataHandler(new RequestMaker().getRequest("RCV_IDS author:@user"," "));
+        DataHandler dataHandler = new DataHandler(new RequestMaker().getRequest("RCV_IDS author:@user jehjdja",""));
         System.out.println(dataHandler.getResponse());
     }
 

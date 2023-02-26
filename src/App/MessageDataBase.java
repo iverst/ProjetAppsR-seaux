@@ -1,7 +1,9 @@
 package App;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class MessageDataBase {
     private int id = 0;
@@ -78,6 +80,10 @@ public class MessageDataBase {
 
     public ArrayList<Message> getMessages() {
         return messages;
+    }
+
+    public ArrayList<Message> getMessageSinceId(int sinceId) {
+        return new ArrayList<>(messages.subList(sinceId, messages.size()));
     }
 
     public static MessageDataBase getInstance() {

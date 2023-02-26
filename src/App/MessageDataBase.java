@@ -15,7 +15,7 @@ public class MessageDataBase {
     public boolean publishMessage(String user, String content) {
         Message message;
         try {
-            message = new Message(content, id);
+            message = new Message(user, content, id);
         }
         catch (Exception e) {
             return false;
@@ -73,6 +73,13 @@ public class MessageDataBase {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public Message getMessageById(int id) {
+        if(id < this.id) {
+            return messages.get(id);
+        }
+        return null;
+    }
 
     public ArrayList<Message> getUserMessages(String user) {
         return (ArrayList<Message>) userMessages.get(user).clone();

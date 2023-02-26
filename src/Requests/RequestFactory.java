@@ -8,6 +8,9 @@ public class RequestFactory {
         else if(request.startsWith("RCV_IDS")) {
             return new RCV_IDSRequest(request);
         }
+        else if(request.startsWith("RCV_MSG")) {
+            return new RCV_MSGRequest(request);
+        }
         else {
             return new NotRecognizedRequest(" ");
         }

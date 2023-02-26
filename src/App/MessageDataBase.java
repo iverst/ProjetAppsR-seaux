@@ -27,6 +27,21 @@ public class MessageDataBase {
         return true;
     }
 
+    public boolean replyToMessage(String user, String content, int replyToId) {
+        Message message;
+        try {
+            message = new Message(user, content, id);
+        }
+        catch (Exception e) {
+            return false;
+        }
+        message.setReplyTo(replyToId);
+        id++;
+        messages.add(message);
+        addMessageUser(user, message);
+        addMessageTags(message);
+        return true;
+    }
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

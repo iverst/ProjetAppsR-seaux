@@ -148,7 +148,7 @@ public class Test {
         messageDataBase.publishMessage("@kebab", "un grand message #big #message");
         messageDataBase.publishMessage("@kebab", "un second grand message #big");
         messageDataBase.publishMessage("@patrick", "eh bah oui ! #message");
-        ArrayList<Message> m1 = messageDataBase.getMessages("@kebab", null, 0, 0);
+        ArrayList<Message> m1 = messageDataBase.getMessages("@kebab", null, -1, -1);
         System.out.println("m1: " + m1);
 
         ArrayList<Message> m2 = messageDataBase.getMessages(null, "#message", 0, -1);

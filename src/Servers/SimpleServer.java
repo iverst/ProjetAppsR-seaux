@@ -30,8 +30,9 @@ public class SimpleServer {
                     //interprétation requete
                     RequestFactory requestFactory = new RequestFactory();
                     Request request = requestFactory.createsRequest(messageReceived);
-                    request.execute();
-
+                    if (! request.isInvalidRequest()) {
+                        request.execute();
+                    }
                     out.println(request.getResponse());
                     out.flush();
                     incomming.close();

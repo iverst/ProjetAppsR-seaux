@@ -87,11 +87,12 @@ public class MessageDataBase {
     }
 
     public ArrayList<Message> getMessageSinceId(int sinceId) {
+
         if(sinceId >= 0 && sinceId <= id - 1) {
             return new ArrayList<>(messages.subList(sinceId, messages.size()));
         }
         else {
-            return null;
+            return (ArrayList<Message>) getMessages().clone();
         }
     }
 
@@ -130,7 +131,6 @@ public class MessageDataBase {
         //messages already sorted by id because getMessages return the messages sorted by id
         //if message size inferior to limit return all messages
         if (messages.size() >= limit) {
-            System.out.println("flag");
 
             messages = new ArrayList<>(messages.subList(messages.size() - limit, messages.size()));
 

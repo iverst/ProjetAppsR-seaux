@@ -7,7 +7,8 @@ import java.util.Arrays;
 
 public class TestRequest {
     public static void main(String[] args) {
-        testRequestRCV_MSG();
+        //testRequestRCV_MSG();
+        testRequestRCV_IDS();
     }
     public static void testRequest() {
         Request request = new PUBLISHRequest("PUBLISH author:@user jjrjrj\r\nCeci est le message \r\n");
@@ -40,7 +41,8 @@ public class TestRequest {
     public static void testRequestRCV_IDS() {
         RequestFactory factory = new RequestFactory();
         MessageDataBase messageDataBase = MessageDataBase.getInstance();
-        messageDataBase.publishMessage("@kebab", "un grand message #big #message");
+        messageDataBase.publishMessage("@nathan", "un grand message #big #message");
+        /*
         messageDataBase.publishMessage("@bertrand", "Mon premier post #message");
         messageDataBase.publishMessage("@kebab", "un second grand message #big");
         messageDataBase.publishMessage("@bertrand", "Un gros cassoulet ! #big");
@@ -48,11 +50,14 @@ public class TestRequest {
         messageDataBase.publishMessage("@patrick", "eh bah non ! #message");
         messageDataBase.publishMessage("@patrick", "eh bah peut etre ! #message");
 
+         */
+
 
         //System.out.println(messageDataBase.getMessages("@bertrand","#big", -1, -1));
         Request request = factory.createsRequest("RCV_IDS author:@kebab tag:#big\r\n\n");
         request = factory.createsRequest("RCV_IDS author:@kebab tag:#big limit:1\r\n\n");
         request = factory.createsRequest("RCV_IDS tag:#message\r\n\n");
+        request = factory.createsRequest("RCV_IDS author:@nathan\r\n\n");
 
         if(! request.isInvalidRequest()) {
             System.out.println("exe");

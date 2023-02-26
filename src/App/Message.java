@@ -54,6 +54,6 @@ public class Message {
     }
 
     public String toString() {
-        return "Message n°" + id + " : " + content;
+        return "Message n°" + id + " From:" + user +  " : " + content;
     }
 }

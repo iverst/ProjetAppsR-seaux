@@ -15,24 +15,26 @@ public class SimpleServer {
                 //initialisation serveur
                 ServerSocket serverSocket = new ServerSocket(12345);
                 int counter = 1;
-                System.out.println("client connecte");
 
                 while (true) {
 
                     Socket incomming = serverSocket.accept();
                     BufferedReader in = new BufferedReader(new InputStreamReader(incomming.getInputStream()));
                     PrintWriter out = new PrintWriter(new OutputStreamWriter(incomming.getOutputStream()));
+                    System.out.println("client connecte");
 
                     //reception message
                     String messageReceived = in.readLine();
                     messageReceived = messageReceived + "\r\n" + in.readLine() + "\r\n";
 
+                    System.out.println("Message Received :" + messageReceived);
                     //interprétation requete
                     RequestFactory requestFactory = new RequestFactory();
                     Request request = requestFactory.createsRequest(messageReceived);
-                    if (! request.isInvalidRequest()) {
-                        request.execute();
-                    }
+
+
+                    request.execute();
+                    System.out.println(request.getResponse());
                     out.println(request.getResponse());
                     out.flush();
                     incomming.close();

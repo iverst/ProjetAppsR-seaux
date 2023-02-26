@@ -24,7 +24,7 @@ public class PUBLISHRequest extends Request {
         if(isInvalidRequest())
             return;
 
-        if(MessageDataBase.getInstance().publishMessage(getParameter("user"), getBody())) {
+        if(MessageDataBase.getInstance().publishMessage(getParameter("author"), getBody())) {
             setResponse("OK");
         }
         else {

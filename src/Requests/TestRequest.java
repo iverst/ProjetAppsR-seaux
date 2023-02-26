@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 public class TestRequest {
     public static void main(String[] args) {
+        testRequestFactory();
     }
     public static void testRequest() {
         Request request = new Request("RCV_IDS author:@user tag:#tag since_id:1345 limit:n \r\nCeci est le message \r\n");
@@ -26,4 +27,9 @@ public class TestRequest {
         System.out.println(Arrays.toString(request.getParameterFormat()));
     }
 
+    public static void testRequestFactory() {
+        RequestFactory factory = new RequestFactory();
+        System.out.println(factory.createsRequest("").toString());
+        System.out.println(factory.createsRequest("PUBLISH author:user \r\ntext \r\n").toString());
+    }
 }

@@ -2,6 +2,8 @@ package Servers;
 
 import App.DataHandler;
 import App.MessageDataBase;
+import Requests.Request;
+import Requests.RequestFactory;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -25,9 +27,12 @@ public class SimpleServer {
                     String messageReceived = in.readLine();
                     messageReceived = messageReceived + "\r\n" + in.readLine() + "\r\n";
 
-                    DataHandler dataHandler = new DataHandler(messageReceived);
-                    String response = dataHandler.getResponse();
-                    out.println(response);
+                    //interprétation requete
+                    RequestFactory requestFactory = new RequestFactory();
+                    Request request = requestFactory.createsRequest(messageReceived);
+                    request.execute();
+
+                    out.println(request.getResponse());
                     out.flush();
                     incomming.close();
 

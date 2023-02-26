@@ -7,7 +7,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class PublisherClient {
+public class Publisher {
     public static void main(String[] args) {
         String address =  "localhost";
         int port = 12345;

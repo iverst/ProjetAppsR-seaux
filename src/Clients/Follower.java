@@ -1,9 +1,9 @@
 package Clients;
 
+import Requests.Request;
 import Requests.RequestMaker;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -11,16 +11,18 @@ import java.util.Scanner;
 public class Follower {
     public static void main(String[] args) {
         Follower follower = new Follower("localhost", 12345);
-        //follower.run();
-        follower.sendRequest(new RequestMaker().getRequest("RCV_IDS author:@arthur", ""));
+        follower.run();
+        //follower.sendRequest(new RequestMaker().getRequest("RCV_IDS author:@arthur", ""));
     }
 
     private String address;
     private int port;
+    private Client client;
 
     public Follower(String address, int port) {
         this.address = address;
         this.port = port;
+        this.client = new Client(address, port);
     }
 
     public void run() {
@@ -28,7 +30,7 @@ public class Follower {
         //get user names
         ArrayList<String> users = new ArrayList<>();
         while (true) {
-            System.out.println("Please enter your user name to know their message (to show messages enter 'show' : ");
+            System.out.println("Please enter your user name to know their message (to show messages enter 'show') : ");
             String s = scanner.nextLine();
             if (s.equals("show")) {
                 System.out.println("show");
@@ -39,27 +41,14 @@ public class Follower {
         }
 
         for (String u : users) {
-            sendRequest("RCV_IDS " + "author:" + u );
+            String response = client.sendRequest(new RequestMaker().getRequest("RCV_IDS author:@"+ u , ""));
+            String[] ids = response.split("\r\n")[1].split(" ");
+
+            for (String s :ids) {
+                String mes = client.sendRequest(new RequestMaker().getRequest("RCV_MSG msg_id:" + s, ""));
+                System.out.println(mes);
+            }
         }
     }
 
-    public void sendRequest(String request) {
-        try {
-            Socket s = new Socket(address, port);
-            BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-            PrintWriter out = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
-            //envoi
-            out.println(request);
-            out.flush();
-            //reception
-            String response = in.readLine();
-            response = response + "\r\n" + in.readLine() + "\r\n";
-            System.out.println(response);
-            //traitement réponse
-            s.close();
-        }
-        catch (IOException io) {
-            io.printStackTrace();
-        }
-    }
 }

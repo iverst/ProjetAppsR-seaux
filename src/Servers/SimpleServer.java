@@ -27,7 +27,6 @@ public class SimpleServer {
                     String messageReceived = in.readLine();
                     messageReceived = messageReceived + "\r\n" + in.readLine() + "\r\n";
 
-                    System.out.println("Message Received :" + messageReceived);
                     //interprétation requete
                     RequestFactory requestFactory = new RequestFactory();
                     Request request = requestFactory.createsRequest(messageReceived);

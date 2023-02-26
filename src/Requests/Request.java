@@ -21,14 +21,6 @@ public class Request {
 
 
     public void execute() {
-        if(MessageDataBase.getInstance().publishMessage(getParameter("user"), getBody())) {
-            response[0] = "OK";
-        }
-        else {
-            response[0]= "ERROR";
-            response[1] = "Message too long";
-
-        }
     }
 
     private void format(String request) {

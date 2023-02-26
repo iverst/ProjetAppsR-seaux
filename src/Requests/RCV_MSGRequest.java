@@ -21,8 +21,15 @@ public class RCV_MSGRequest extends Request {
 
     @Override
     public void execute() {
-        int id = Integer.parseInt(getParameter("msg_id"));
-
+        int id;
+        try {
+            id = Integer.parseInt(getParameter("msg_id"));
+        }
+        catch (Exception e) {
+            setInvalidRequest(true);
+            setResponse("ERROR", "Id is not a number");
+            return;
+        }
         Message message = MessageDataBase.getInstance().getMessageById(id);
         if (message == null) {
             setInvalidRequest(true);

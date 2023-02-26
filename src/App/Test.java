@@ -9,18 +9,7 @@ import java.util.HashMap;
 
 public class Test {
     public static void main(String[] args) {
-        //testString();
-        //testString2();
-        //testInterpreter();
-        //testRequest();
-        //testInterpreter2();
-        //testMessage();
-        //testHashMap();
-        //testMessageDBUser();
-        //testMessageTags();
-        testDataHandler();
-        //testRetainAll();
-        //testMessageSince();
+        testGetMessagesWithParams();
     }
 
     public static void testString() {
@@ -123,6 +112,9 @@ public class Test {
         messageDataBase.publishMessage("@patrick", "eh bah oui ! #message");
         System.out.println(messageDataBase.getMessageSinceId(1));
         System.out.println(messageDataBase.getMessageSinceId(2));
+        System.out.println(messageDataBase.getMessageSinceId(-2));
+        System.out.println(messageDataBase.getMessageSinceId(3));
+
 
     }
 
@@ -148,6 +140,23 @@ public class Test {
         list2.add(3);
         list1.retainAll(list2);
         System.out.println(list1);
+
+    }
+
+    public static void testGetMessagesWithParams() {
+        MessageDataBase messageDataBase = MessageDataBase.getInstance();
+        messageDataBase.publishMessage("@kebab", "un grand message #big #message");
+        messageDataBase.publishMessage("@kebab", "un second grand message #big");
+        messageDataBase.publishMessage("@patrick", "eh bah oui ! #message");
+        ArrayList<Message> m1 = messageDataBase.getMessages("@kebab", null, 0, 0);
+        System.out.println("m1: " + m1);
+
+        ArrayList<Message> m2 = messageDataBase.getMessages(null, "#message", 0, -1);
+        System.out.println("m2 :" + m2);
+
+        System.out.println(m1 == m2);
+        ArrayList<Message> m3 = messageDataBase.getMessages("@patrick", null, 0, -1);
+        System.out.println("m3 :" + m3);
 
     }
 

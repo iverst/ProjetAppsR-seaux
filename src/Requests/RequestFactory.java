@@ -5,7 +5,7 @@ public class RequestFactory {
         String type = findRequestType(request);
         switch (type) {
             case "PUBLISH":
-                return new PublishRequest(request);
+                return new PUBLISHRequest(request);
             default:
                 return new NotRecognizedRequest(request);
         }

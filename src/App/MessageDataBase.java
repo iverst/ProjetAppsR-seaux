@@ -70,21 +70,77 @@ public class MessageDataBase {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     public ArrayList<Message> getUserMessages(String user) {
-        return userMessages.get(user);
+        return (ArrayList<Message>) userMessages.get(user).clone();
     }
 
     public ArrayList<Message> getMessagesByTag(String tag) {
-        return tags.get(tag);
+        return (ArrayList<Message>) tags.get(tag).clone();
     }
 
     public ArrayList<Message> getMessages() {
-        return messages;
+        return (ArrayList<Message>) messages.clone();
     }
 
     public ArrayList<Message> getMessageSinceId(int sinceId) {
-        return new ArrayList<>(messages.subList(sinceId, messages.size()));
+        if(sinceId >= 0 && sinceId <= id - 1) {
+            return new ArrayList<>(messages.subList(sinceId, messages.size()));
+        }
+        else {
+            return null;
+        }
     }
+
+
+    public ArrayList<Message> getMessages(String author, String tag, int sinceId, int limit) {
+        ArrayList<Message> messages = getMessages();
+
+        //author
+        if (author != null && userMessages.containsKey(author)) {
+            messages.retainAll(getUserMessages(author));
+        }
+        else if(author != null) {
+            return new ArrayList<>();
+        }
+        //tag part
+        if (tag != null && tags.containsKey(tag)) {
+            messages.retainAll(getMessagesByTag(tag));
+        }
+        else if(tag != null) {
+            return new ArrayList<>();
+        }
+
+        //since id part
+        ArrayList<Message> messageSinceID = getMessageSinceId(sinceId);
+        if (messageSinceID != null) {
+            messages.retainAll(messageSinceID);
+        }
+        else {
+            return new ArrayList<>();
+        }
+
+        //limit
+        if(limit < 0) {
+            limit = 5;
+        }
+        //messages already sorted by id because getMessages return the messages sorted by id
+        //if message size inferior to limit return all messages
+        if (messages.size() >= limit) {
+            System.out.println("flag");
+
+            messages = new ArrayList<>(messages.subList(messages.size() - limit, messages.size()));
+
+        }
+
+        return (ArrayList<Message>) messages.clone();
+    }
+
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static MessageDataBase getInstance() {
         if (instance == null) {

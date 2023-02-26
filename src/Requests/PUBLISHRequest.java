@@ -2,8 +2,8 @@ package Requests;
 
 import App.MessageDataBase;
 
-public class PublishRequest extends Request {
-    public PublishRequest(String request) {
+public class PUBLISHRequest extends Request {
+    public PUBLISHRequest(String request) {
         super(request);
     }
 

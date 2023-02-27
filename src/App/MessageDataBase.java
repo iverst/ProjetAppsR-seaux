@@ -43,6 +43,31 @@ public class MessageDataBase {
         return true;
     }
 
+    public boolean republishMessage(String user, int initialId) {
+        //get content from republished message using parameter id
+        Message message = getMessageById(initialId);
+        if (message == null) {
+            return false;
+        }
+
+        //publish message
+
+        Message republishedMessage;
+        try {
+            republishedMessage = new Message(user, message.getContent(), id);
+        }
+        catch (Exception e) {
+            return false;
+        }
+        id++;
+        messages.add(republishedMessage);
+        addMessageUser(user, republishedMessage);
+        addMessageTags(republishedMessage);
+        //set republish true
+        republishedMessage.setRepublished(true);
+        return true;
+    }
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

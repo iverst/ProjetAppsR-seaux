@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class TestRequest {
     public static void main(String[] args) {
-        testRequestReply();
+        testRequestREPUBLISH();
     }
     public static void testRequest() {
         Request request = new PUBLISHRequest("PUBLISH author:@user jjrjrj\r\nCeci est le message \r\n");
@@ -105,5 +105,27 @@ public class TestRequest {
         System.out.println(request1.getResponse());
         System.out.println(messageDataBase.getMessages());
         System.out.println(messageDataBase.getMessageById(7).getReplyTo());
+    }
+
+    public static void testRequestREPUBLISH() {
+        RequestFactory factory = new RequestFactory();
+
+        MessageDataBase messageDataBase = MessageDataBase.getInstance();
+        messageDataBase.publishMessage("@kebab", "un grand message #big #message");
+        messageDataBase.publishMessage("@bertrand", "Mon premier post #message");
+        messageDataBase.publishMessage("@kebab", "un second grand message #big");
+        messageDataBase.publishMessage("@bertrand", "Un gros cassoulet ! #big");
+        messageDataBase.publishMessage("@patrick", "eh bah oui ! #message");
+        messageDataBase.publishMessage("@patrick", "eh bah non ! #message");
+        messageDataBase.publishMessage("@patrick", "eh bah peut etre ! #message");
+
+
+        Request request1 = factory.createsRequest(
+                new RequestMaker().getRequest("REPUBLISH author:@francois msg_id:2",""));
+        request1.execute();
+        System.out.println(request1.getResponse());
+        System.out.println(messageDataBase.getMessages());
+        System.out.println(messageDataBase.getMessages().get(0).isRepublished());
+        System.out.println(messageDataBase.getMessages().get(7).isRepublished());
     }
 }

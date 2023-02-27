@@ -14,6 +14,9 @@ public class RequestFactory {
         else if(request.startsWith("REPLY")) {
             return new ReplyRequest(request);
         }
+        else if(request.startsWith("REPUBLISH")) {
+            return new REPUBLISHRequest(request);
+        }
         else {
             return new NotRecognizedRequest(" ");
         }

@@ -1,6 +1,6 @@
 package Requests;
 
-public class UNSUBSCRIBERequest extends Request {
+public class UNSUBSCRIBERequest extends SUBSCRIBERequest {
 
     public UNSUBSCRIBERequest(String request) {
         super(request);
@@ -8,13 +8,7 @@ public class UNSUBSCRIBERequest extends Request {
 
     @Override
     public boolean checkFormat() {
-        String[] parameters = getParameterFormat();
-        if (parameters.length != 1 || ! parameters[0].equals("author") && ! parameters[0].equals("tag")) {
-            setInvalidRequest(true);
-            setResponse("ERROR", "Bad request format");
-            return false;
-        }
-        return true;
+        return super.checkFormat();
     }
 
     @Override

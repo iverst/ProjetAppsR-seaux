@@ -17,6 +17,12 @@ public class RequestFactory {
         else if(request.startsWith("REPUBLISH")) {
             return new REPUBLISHRequest(request);
         }
+        else if(request.startsWith("SUBSCRIBE")) {
+            return new SUBSCRIBERequest(request);
+        }
+        else if(request.startsWith("UNSUBSCRIBE")) {
+            return new UNSUBSCRIBERequest(request);
+        }
         else {
             return new NotRecognizedRequest(" ");
         }

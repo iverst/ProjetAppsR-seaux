@@ -75,6 +75,7 @@ public class MessageDataBase {
 
 
     private void addMessageUser(String user, Message message) {
+        Subscription.getInstance().distributeMessage(message);
         ArrayList<Message> messages = userMessages.get(user);
         if (messages == null) {
             messages = new ArrayList<>();
@@ -93,6 +94,7 @@ public class MessageDataBase {
         for (String word :  words) {
             if (word.charAt(0) == '#') {
                 addTag(word, message);
+                Subscription.getInstance().distributeMessage(message, word);
             }
         }
     }
@@ -187,6 +189,11 @@ public class MessageDataBase {
     }
 
 
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public boolean hasAuthor(String author) {
+        return userMessages.containsKey(author);
+    }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public static MessageDataBase getInstance() {

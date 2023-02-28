@@ -6,10 +6,11 @@ import Requests.RequestMaker;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Test {
     public static void main(String[] args) {
-        testGetMessagesWithParams();
+        testSubscription();
     }
 
     public static void testString() {
@@ -160,6 +161,35 @@ public class Test {
 
     }
 
+    public static void testSubscription() {
+        MessageDataBase messageDataBase = MessageDataBase.getInstance();
+        messageDataBase.publishMessage("@kebab", "un grand message #big #message");
+        messageDataBase.publishMessage("@bertrand", "Mon premier post #message");
+        messageDataBase.publishMessage("@patrick", "eh bah oui ! #message");
+
+
+        ConcurrentLinkedQueue<Message> sub1 = new ConcurrentLinkedQueue<>();
+        ConcurrentLinkedQueue<Message> sub2 = new ConcurrentLinkedQueue<>();
+        ConcurrentLinkedQueue<Message> sub3 = new ConcurrentLinkedQueue<>();
+
+
+        Subscription subscription = Subscription.getInstance();
+        subscription.subscribeToAuthor("@kebab", sub1);
+        subscription.subscribeToAuthor("@patrick", sub2);
+        subscription.subscribeToTag("#big", sub3);
+        subscription.subscribeToTag("#message", sub3);
+
+
+        messageDataBase.publishMessage("@kebab", "un second grand message #big");
+        messageDataBase.publishMessage("@bertrand", "Un gros cassoulet ! #big");
+        messageDataBase.publishMessage("@patrick", "eh bah non ! #message");
+        messageDataBase.publishMessage("@patrick", "eh bah #big peut etre ! #message");
+
+
+        System.out.println(sub1);
+        System.out.println(sub2);
+        System.out.println(sub3);
+    }
 }
 
 

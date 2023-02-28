@@ -3,7 +3,7 @@ package Clients;
 import java.io.*;
 import java.net.Socket;
 
-public class Client {
+public abstract class Client {
     private String address;
     private int port;
 
@@ -36,4 +36,6 @@ public class Client {
             return null;
         }
     }
+
+    public abstract void run();
 }

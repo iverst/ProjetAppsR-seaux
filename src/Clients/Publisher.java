@@ -7,38 +7,27 @@ import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class Publisher {
+public class Publisher extends Client {
     public static void main(String[] args) {
-        String address =  "localhost";
-        int port = 12345;
-        Scanner scanner = new Scanner(System.in);
-        //initialisation nom author
-        System.out.println("Please enter your user name : ");
-        String userName = scanner.nextLine();
-        System.out.println(userName);
-        while(true) {
-            //creation message
-            System.out.println("Please enter your message :");
-            String message= scanner.nextLine();
-            String request = new RequestMaker().getRequest("PUBLISH " + "author:@" + userName, message);
+        Client publisher = new Publisher("localhost", 12345);
+        publisher.run();
+    }
 
-            try {
-                Socket s = new Socket(address, port);
-                BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                PrintWriter out = new PrintWriter(new OutputStreamWriter(s.getOutputStream()));
-                //envoi
-                out.println(request);
-                out.flush();
-                //reception
-                String response = in.readLine();
-                response = response + "\r\n" + in.readLine() + "\r\n";
-                System.out.println(response);
-                //traitement réponse
-                s.close();
-            }
-            catch (IOException io) {
-                io.printStackTrace();
-            }
+    public Publisher(String address, int port) {
+        super(address, port);
+    }
+
+    @Override
+    public void run() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please enter your user name :");
+        String name = scanner.nextLine();
+        name = "@" + name;
+
+        while (true) {
+            System.out.println("Please enter your message :");
+            String s = scanner.nextLine();
+            sendRequest(new RequestMaker().getRequest("PUBLISH author:" + name, s));
         }
     }
 }

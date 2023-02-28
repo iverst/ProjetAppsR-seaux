@@ -5,21 +5,18 @@ import Requests.RequestMaker;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Repost {
+public class Repost extends Client {
 
     public static void main(String[] args) {
-        Repost client = new Repost("localhost", 12345, "repost");
+        Client client = new Repost("localhost", 12345, "repost");
         client.run();
     }
 
-    private String address, name;
-    private int port;
-    private Client client;
+    private String name;
+
 
     public Repost(String address, int port, String name) {
-        this.address = address;
-        this.port = port;
-        this.client = client = new Client(address, port);
+        super(address, port);
         this.name = name;
     }
 
@@ -39,11 +36,11 @@ public class Repost {
 
         //republish part
         for (String u : users) {
-            String response = client.sendRequest(new RequestMaker().getRequest("RCV_IDS author:@"+ u , ""));
+            String response = sendRequest(new RequestMaker().getRequest("RCV_IDS author:@"+ u , ""));
             String[] ids = response.split("\r\n")[1].split(" ");
 
             for (String s :ids) {
-                String mes2 = client.sendRequest(new RequestMaker().getRequest("REPUBLISH author:" + name +  " msg_id:" + s, ""));
+                String mes2 = sendRequest(new RequestMaker().getRequest("REPUBLISH author:" + name +  " msg_id:" + s, ""));
                 System.out.println(mes2);
             }
         }

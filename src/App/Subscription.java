@@ -2,14 +2,13 @@ package App;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Subscription {
     private static Subscription instance = new Subscription();
     private HashMap<String, ArrayList<ConcurrentLinkedQueue<Message>>> userSubscribers = new HashMap<>();
-    private HashMap<String, ArrayList<ConcurrentLinkedQueue<Message>>> tagSSubscribers = new HashMap<>();
+    private HashMap<String, ArrayList<ConcurrentLinkedQueue<Message>>> tagSubscribers = new HashMap<>();
 
     public boolean subscribeToAuthor(String author, ConcurrentLinkedQueue<Message> queue) {
         if (MessageDataBase.getInstance().hasAuthor(author)) {
@@ -27,13 +26,35 @@ public class Subscription {
     }
 
     public boolean subscribeToTag(String tag, ConcurrentLinkedQueue<Message> queue) {
-        ArrayList<ConcurrentLinkedQueue<Message>> subscribers = tagSSubscribers.get(tag);
+        ArrayList<ConcurrentLinkedQueue<Message>> subscribers = tagSubscribers.get(tag);
         if (subscribers == null) {
             subscribers = new ArrayList<>();
-            tagSSubscribers.put(tag, subscribers);
+            tagSubscribers.put(tag, subscribers);
         }
         subscribers.add(queue);
         return true;
+    }
+
+    public boolean unsubscribeToAuthor(String author, ConcurrentLinkedQueue<Message> queue) {
+        if (userSubscribers.containsKey(author)) {
+            ArrayList<ConcurrentLinkedQueue<Message>> subs = userSubscribers.get(author);
+            subs.remove(queue);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public boolean unsubcribeToTag(String tag, ConcurrentLinkedQueue<Message> queue) {
+        if (tagSubscribers.containsKey(tag)) {
+            ArrayList<ConcurrentLinkedQueue<Message>> subs = tagSubscribers.get(tag);
+            subs.remove(queue);
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     //////////////////////////////////////////////////////////////////
@@ -48,8 +69,8 @@ public class Subscription {
     }
 
     public void distributeMessage(Message message, String tag) {
-        if (tagSSubscribers.containsKey(tag)) {
-            ArrayList<ConcurrentLinkedQueue<Message>> subscribers = tagSSubscribers.get(tag);
+        if (tagSubscribers.containsKey(tag)) {
+            ArrayList<ConcurrentLinkedQueue<Message>> subscribers = tagSubscribers.get(tag);
             for (ConcurrentLinkedQueue<Message> s : subscribers) {
                 s.add(message);
             }
@@ -62,6 +83,6 @@ public class Subscription {
     }
 
     public String toString() {
-        return userSubscribers.toString() + tagSSubscribers.toString();
+        return userSubscribers.toString() + tagSubscribers.toString();
     }
 }

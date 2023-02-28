@@ -2,12 +2,11 @@ package Requests;
 
 import App.MessageDataBase;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 public class TestRequest {
     public static void main(String[] args) {
-        testRequestREPUBLISH();
+        testREQUESTSUBSCRIBE();
     }
     public static void testRequest() {
         Request request = new PUBLISHRequest("PUBLISH author:@user jjrjrj\r\nCeci est le message \r\n");
@@ -127,5 +126,18 @@ public class TestRequest {
         System.out.println(messageDataBase.getMessages());
         System.out.println(messageDataBase.getMessages().get(0).isRepublished());
         System.out.println(messageDataBase.getMessages().get(7).isRepublished());
+    }
+
+    public static void testREQUESTSUBSCRIBE() {
+        RequestFactory factory = new RequestFactory();
+
+        Request request1 = factory.createsRequest(new RequestMaker().getRequest("SUBSCRIBE author:@william", ""));
+        System.out.println(request1.checkFormat());
+        Request request2 = factory.createsRequest(new RequestMaker().getRequest("UNSUBSCRIBE tag:#william", ""));
+        System.out.println(request2.checkFormat());
+        Request request3 = factory.createsRequest(new RequestMaker().getRequest("UNSUBSCRIBE id:3", ""));
+        System.out.println(request3.checkFormat());
+        Request request4 = factory.createsRequest(new RequestMaker().getRequest("UNSUBSCRIBE author:@william tag:#william", ""));
+        System.out.println(request4.checkFormat());
     }
 }

@@ -1,20 +1,23 @@
 package Servers;
 
+import App.Message;
 import App.MessageDataBase;
 import Requests.Request;
 import Requests.RequestFactory;
+import Requests.RequestMaker;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
-public class NonConnectedServer {
+public class MicroblogCentral {
     public static void main(String[] args) {
-        NonConnectedServer nonConnectedServer = new NonConnectedServer(12345, "localhost");
+        MicroblogCentral mircoblog = new MicroblogCentral(12345, "localhost");
         try {
-            nonConnectedServer.run();
+            mircoblog.run();
         }
         catch (IOException io) {
             io.printStackTrace();
@@ -24,7 +27,7 @@ public class NonConnectedServer {
     private int port;
     private String address;
 
-    public NonConnectedServer(int port, String address) {
+    public MicroblogCentral(int port, String address) {
         this.port = port;
         this.address = address;
     }
@@ -42,11 +45,11 @@ public class NonConnectedServer {
     }
 }
 
-class ClientHandler extends Thread {
+class ClientHandlerMicroblogCentral extends Thread {
     private final Socket socket;
     private int threadNumber;
 
-    public ClientHandler(Socket socket) {
+    public ClientHandlerMicroblogCentral(Socket socket) {
         this.socket = socket;
         threadNumber = Counter.getInstance().getAndIncrement();
         System.out.println("Thread number :" + threadNumber);
@@ -70,15 +73,42 @@ class ClientHandler extends Thread {
             Request request = requestFactory.createsRequest(messageReceived);
 
 
+
+
             //reponse requete
             request.execute();
-            out.println(request.getResponse());
-            out.flush();
-            System.out.println(MessageDataBase.getInstance().getMessages());
-            socket.close();
+            //subscription case
+            if(messageReceived.startsWith("SUBSCRIBE") && request.getResponse().startsWith("OK")) {
+                manageSubscription();
+            }
+            else {
+                out.println(request.getResponse());
+                out.flush();
+                System.out.println(MessageDataBase.getInstance().getMessages());
+                socket.close();
+            }
 
         } catch (Exception e) {
-        }
 
+        }
+    }
+
+    private void manageSubscription() throws IOException {
+        PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+        //recupérer le message
+        RequestFactory factory = new RequestFactory();
+        LinkedBlockingQueue<Message> queue = new LinkedBlockingQueue<>();
+
+        while (true) {
+            Message message = queue.poll();
+            if(message == null) {
+                socket.close();
+                return;
+            }
+            Request request = factory.createsRequest(new RequestMaker().getRequest("RCV_MSG msg_id:" + message.getId(), ""));
+            System.out.println(request.getResponse());
+            out.println(request.getResponse());
+            out.flush();
+        }
     }
 }

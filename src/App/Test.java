@@ -186,7 +186,7 @@ public class Test {
         messageDataBase.publishMessage("@patrick", "eh bah #big peut etre ! #message");
 
         subscription.unsubscribeToAuthor("@kebab", sub1);
-        subscription.unsubcribeToTag("#big", sub3);
+        subscription.unsubscribeToTag("#big", sub3);
 
 
         messageDataBase.publishMessage("@kebab", "un troisieme grand message #big");

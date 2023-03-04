@@ -46,7 +46,7 @@ public class Subscription {
         }
     }
 
-    public boolean unsubcribeToTag(String tag, ConcurrentLinkedQueue<Message> queue) {
+    public boolean unsubscribeToTag(String tag, ConcurrentLinkedQueue<Message> queue) {
         if (tagSubscribers.containsKey(tag)) {
             ArrayList<ConcurrentLinkedQueue<Message>> subs = tagSubscribers.get(tag);
             subs.remove(queue);

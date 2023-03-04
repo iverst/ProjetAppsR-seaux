@@ -1,8 +1,11 @@
 package Requests;
 
+import App.Message;
 import App.MessageDataBase;
+import App.Subscription;
 
 import java.util.Arrays;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TestRequest {
     public static void main(String[] args) {
@@ -129,15 +132,45 @@ public class TestRequest {
     }
 
     public static void testREQUESTSUBSCRIBE() {
-        RequestFactory factory = new RequestFactory();
 
-        Request request1 = factory.createsRequest(new RequestMaker().getRequest("SUBSCRIBE author:@william", ""));
-        System.out.println(request1.checkFormat());
-        Request request2 = factory.createsRequest(new RequestMaker().getRequest("UNSUBSCRIBE tag:#william", ""));
-        System.out.println(request2.checkFormat());
+
+
+        RequestFactory factory = new RequestFactory();
+        ConcurrentLinkedQueue<Message> sub1 = new ConcurrentLinkedQueue<>();
+        ConcurrentLinkedQueue<Message> sub2 = new ConcurrentLinkedQueue<>();
+
+        MessageDataBase messageDataBase = MessageDataBase.getInstance();
+        messageDataBase.publishMessage("@patrick", "eh bah oui ! #message");
+
+        //SUBSCRIBERequest request1 = (SUBSCRIBERequest) factory.createsRequest(new RequestMaker().getRequest("SUBSCRIBE author:@patrick", ""));
+        SUBSCRIBERequest request1 = (SUBSCRIBERequest) factory.createsRequest(new RequestMaker().getRequest("SUBSCRIBE tag:#message", ""));
+        request1.setQueue(sub1);
+        request1.execute();
+        System.out.println(request1.getResponse());
+
+        messageDataBase.publishMessage("@kebab", "un grand message #big #message");
+        messageDataBase.publishMessage("@bertrand", "Mon premier post #message");
+        messageDataBase.publishMessage("@kebab", "un second grand message #big");
+        messageDataBase.publishMessage("@bertrand", "Un gros cassoulet ! #big");
+        messageDataBase.publishMessage("@patrick", "eh bah non ! #message");
+        messageDataBase.publishMessage("@patrick", "eh bah peut etre ! #message");
+
+        //SUBSCRIBERequest request2 = (SUBSCRIBERequest) factory.createsRequest(new RequestMaker().getRequest("UNSUBSCRIBE author:@patrick", ""));
+        SUBSCRIBERequest request2 = (SUBSCRIBERequest) factory.createsRequest(new RequestMaker().getRequest("UNSUBSCRIBE tag:#message", ""));
+        request2.setQueue(sub1);
+        request2.execute();
+        System.out.println(request2.getResponse());
+
+        messageDataBase.publishMessage("@patrick", "au revoir tout le monde ! #message");
+
+        //ne doit pas contenir le message "au revoir tout le monde !"
+        System.out.println(sub1);
+        /*
         Request request3 = factory.createsRequest(new RequestMaker().getRequest("UNSUBSCRIBE id:3", ""));
         System.out.println(request3.checkFormat());
         Request request4 = factory.createsRequest(new RequestMaker().getRequest("UNSUBSCRIBE author:@william tag:#william", ""));
         System.out.println(request4.checkFormat());
+
+         */
     }
 }

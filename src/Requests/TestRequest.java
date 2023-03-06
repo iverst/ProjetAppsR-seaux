@@ -2,14 +2,13 @@ package Requests;
 
 import App.Message;
 import App.MessageDataBase;
-import App.Subscription;
 
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TestRequest {
     public static void main(String[] args) {
-        testREQUESTSUBSCRIBE();
+        testCONNECTRequest();
     }
     public static void testRequest() {
         Request request = new PUBLISHRequest("PUBLISH author:@user jjrjrj\r\nCeci est le message \r\n");
@@ -143,7 +142,7 @@ public class TestRequest {
         messageDataBase.publishMessage("@patrick", "eh bah oui ! #message");
 
         //SUBSCRIBERequest request1 = (SUBSCRIBERequest) factory.createsRequest(new RequestMaker().getRequest("SUBSCRIBE author:@patrick", ""));
-        SUBSCRIBERequest request1 = (SUBSCRIBERequest) factory.createsRequest(new RequestMaker().getRequest("SUBSCRIBE tag:#message", ""));
+        SUBSCRIBERRequest request1 = (SUBSCRIBERRequest) factory.createsRequest(new RequestMaker().getRequest("SUBSCRIBE tag:#message", ""));
         request1.setQueue(sub1);
         request1.execute();
         System.out.println(request1.getResponse());
@@ -156,7 +155,7 @@ public class TestRequest {
         messageDataBase.publishMessage("@patrick", "eh bah peut etre ! #message");
 
         //SUBSCRIBERequest request2 = (SUBSCRIBERequest) factory.createsRequest(new RequestMaker().getRequest("UNSUBSCRIBE author:@patrick", ""));
-        SUBSCRIBERequest request2 = (SUBSCRIBERequest) factory.createsRequest(new RequestMaker().getRequest("UNSUBSCRIBE tag:#message", ""));
+        SUBSCRIBERRequest request2 = (SUBSCRIBERRequest) factory.createsRequest(new RequestMaker().getRequest("UNSUBSCRIBE tag:#message", ""));
         request2.setQueue(sub1);
         request2.execute();
         System.out.println(request2.getResponse());
@@ -172,5 +171,14 @@ public class TestRequest {
         System.out.println(request4.checkFormat());
 
          */
+    }
+
+    public static void testCONNECTRequest() {
+        RequestFactory factory = new RequestFactory();
+        Request request = factory.createsRequest(RequestMaker.getRequest("CONNECT user:@etienne", ""));
+        System.out.println(request.getParameter("user"));
+        System.out.println(request.getResponse());
+        Request request2 = factory.createsRequest(RequestMaker.getRequest("CONNECT usr:@etienne", ""));
+        System.out.println(request2.getResponse());
     }
 }

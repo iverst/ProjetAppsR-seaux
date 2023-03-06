@@ -18,10 +18,13 @@ public class RequestFactory {
             return new REPUBLISHRequest(request);
         }
         else if(request.startsWith("SUBSCRIBE")) {
-            return new SUBSCRIBERequest(request);
+            return new SUBSCRIBERRequest(request);
         }
         else if(request.startsWith("UNSUBSCRIBE")) {
-            return new UNSUBSCRIBERequest(request);
+            return new UNSUBSCRIBERRequest(request);
+        }
+        else if(request.startsWith("CONNECT")) {
+            return new CONNECTRequest(request);
         }
         else {
             return new NotRecognizedRequest(" ");

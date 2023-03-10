@@ -117,14 +117,6 @@ public class Test {
 
     }
 
-    public static void testDataHandler() {
-        MessageDataBase messageDataBase = MessageDataBase.getInstance();
-        messageDataBase.publishMessage("@kebab", "un grand message #big #message");
-        messageDataBase.publishMessage("@kebab", "un second grand message");
-        messageDataBase.publishMessage("@patrick", "eh bah oui ! #message");
-        DataHandler dataHandler = new DataHandler(new RequestMaker().getRequest("RCV_IDS author:@user",""));
-        System.out.println(dataHandler.getResponse());
-    }
 
     public static void testRetainAll() {
         ArrayList<Integer> list1 = new ArrayList<>();

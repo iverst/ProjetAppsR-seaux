@@ -35,7 +35,6 @@ public class NonConnectedServer {
         ServerSocket serverSocket = new ServerSocket(port);
         while (true) {
             Thread thread = new ClientHandler(serverSocket.accept());
-            thread.start();
             executor.execute(thread);
         }
 

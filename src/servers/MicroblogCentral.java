@@ -148,7 +148,7 @@ class ClientHandlerMicroblogCentral extends Thread {
                         request.execute();
                         out.print(request.getResponse());
                         out.flush();
-                        socket.close();
+                        //socket.close();
                         System.out.println("---------------------------------------");
                         System.out.println(request.getResponse());
                         System.out.println(MessageDataBase.getInstance().getMessages());

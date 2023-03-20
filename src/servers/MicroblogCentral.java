@@ -32,7 +32,7 @@ public class MicroblogCentral {
     }
 
     private void run() throws IOException {
-        Executor executor = Executors.newCachedThreadPool();
+        Executor executor = Executors.newFixedThreadPool(100);
         //initialisation serveur
         ServerSocket serverSocket = new ServerSocket(port);
         while (true) {
@@ -69,6 +69,7 @@ class ClientHandlerMicroblogCentral extends Thread {
             //reception message
             while (true) {
                 String messageReceived = "";
+                /*
 
                 if (isConnected) {
                     messageReceived = in.readLine();
@@ -76,11 +77,19 @@ class ClientHandlerMicroblogCentral extends Thread {
                 else if (in.ready()) {
                     messageReceived = in.readLine();
                 }
-                if (in.ready()) {
+
+                 */
+                do {
+                    if (in.ready()) {
+                        messageReceived = in.readLine();
+                    }
+                } while (messageReceived == null || messageReceived.length() < 1);
+
+
                     String newLine = in.readLine();
                     messageReceived = messageReceived + "\r\n" + newLine + "\r\n";
 
-                }
+
 
 
                 if (messageReceived != null && messageReceived.length() != 0) {
@@ -153,17 +162,13 @@ class ClientHandlerMicroblogCentral extends Thread {
                         System.out.println(request.getResponse());
                         System.out.println(MessageDataBase.getInstance().getMessages());
                         System.out.println(Subscription.getInstance());
-                        System.out.println("---------------------------------------");
-                        System.out.println("---------------------------------------");
-                        return;
+                        break;
                     }
 
                     System.out.println("---------------------------------------");
                     System.out.println(request.getResponse());
                     System.out.println(MessageDataBase.getInstance().getMessages());
                     System.out.println(Subscription.getInstance());
-                    System.out.println("---------------------------------------");
-                    System.out.println("---------------------------------------");
                 }
             }
         } catch (Exception e) {

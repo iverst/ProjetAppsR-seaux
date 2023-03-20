@@ -2,13 +2,19 @@ package app;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Subscription {
     private static Subscription instance = new Subscription();
     private HashMap<String, ArrayList<ConcurrentLinkedQueue<Message>>> userSubscribers = new HashMap<>();
     private HashMap<String, ArrayList<ConcurrentLinkedQueue<Message>>> tagSubscribers = new HashMap<>();
+    private ArrayList<ConcurrentLinkedQueue<Message>> globalSubscribers = new ArrayList<>();
+
+    //subscribe to all messages
+    public boolean subscribeToAll(ConcurrentLinkedQueue<Message> queue) {
+        globalSubscribers.add(queue);
+        return true;
+    }
 
 
     public boolean subscribeToAuthor(String author, ConcurrentLinkedQueue<Message> queue) {
@@ -59,11 +65,10 @@ public class Subscription {
     }
 
     //////////////////////////////////////////////////////////////////
-
     public void distributeMessage(Message message) {
         if (userSubscribers.containsKey(message.getUser())) {
             ArrayList<ConcurrentLinkedQueue<Message>> subscribers = userSubscribers.get(message.getUser());
-            for (Queue s : subscribers) {
+            for (ConcurrentLinkedQueue<Message> s : subscribers) {
                 s.add(message);
 
             }
@@ -71,6 +76,10 @@ public class Subscription {
     }
 
     public void distributeMessage(Message message, String tag) {
+        for(ConcurrentLinkedQueue<Message> subs : globalSubscribers) {
+            subs.add(message);
+        }
+
         if (tagSubscribers.containsKey(tag)) {
             ArrayList<ConcurrentLinkedQueue<Message>> subscribers = tagSubscribers.get(tag);
             for (ConcurrentLinkedQueue<Message> s : subscribers) {

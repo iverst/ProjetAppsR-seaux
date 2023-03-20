@@ -9,7 +9,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TestRequest {
     public static void main(String[] args) {
-        testREQUESTSUBSCRIBE();
+
+        testSERVERCONNECTRequest();
     }
     public static void testRequest() {
         Request request = new PUBLISHRequest("PUBLISH author:@user jjrjrj\r\nCeci est le message \r\n");
@@ -188,5 +189,31 @@ public class TestRequest {
         System.out.println(request.getResponse());
         Request request2 = factory.createsRequest(RequestMaker.getRequest("CONNECT usr:@etienne", ""));
         System.out.println(request2.getResponse());
+    }
+
+    public static void testSERVERCONNECTRequest() {
+
+        MessageDataBase messageDataBase = MessageDataBase.getInstance();
+        messageDataBase.publishMessage("@patrick", "eh bah oui ! #message");
+
+        ConcurrentLinkedQueue<Message> queue = new ConcurrentLinkedQueue<>();
+
+        RequestFactory factory = new RequestFactory();
+        SERVERCONNECTRequest request = (SERVERCONNECTRequest) factory.createsRequest(RequestMaker.getRequest("SERVERCONNECT",""));
+
+        messageDataBase.publishMessage("@kebab", "un grand message #big #message");
+
+
+        request.setQueue(queue);
+        request.execute();
+
+        messageDataBase.publishMessage("@bertrand", "Mon premier post #message");
+        messageDataBase.publishMessage("@kebab", "un second grand message #big");
+        messageDataBase.publishMessage("@bertrand", "Un gros cassoulet ! #big");
+        messageDataBase.publishMessage("@patrick", "eh bah non ! #message");
+        messageDataBase.publishMessage("@patrick", "eh bah peut etre ! #message");
+
+        System.out.println(request.getResponse());
+        System.out.println(queue);
     }
 }

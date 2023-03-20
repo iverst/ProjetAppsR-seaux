@@ -10,7 +10,7 @@ public class MessageDataBase {
     private HashMap<String, ArrayList<Message>> tags = new HashMap<>();
     private static MessageDataBase instance;
 
-    public boolean publishMessage(String user, String content) {
+    public synchronized boolean publishMessage(String user, String content) {
         Message message;
         try {
             message = new Message(user, content, id);
@@ -25,7 +25,7 @@ public class MessageDataBase {
         return true;
     }
 
-    public boolean replyToMessage(String user, String content, int replyToId) {
+    public synchronized boolean replyToMessage(String user, String content, int replyToId) {
         Message message;
         try {
             message = new Message(user, content, id);
@@ -41,7 +41,7 @@ public class MessageDataBase {
         return true;
     }
 
-    public boolean republishMessage(String user, int initialId) {
+    public synchronized boolean republishMessage(String user, int initialId) {
         //get content from republished message using parameter id
         Message message = getMessageById(initialId);
         if (message == null) {
@@ -114,7 +114,7 @@ public class MessageDataBase {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public Message getMessageById(int id) {
+    public synchronized Message getMessageById(int id) {
         if(id < this.id) {
             return messages.get(id);
         }
@@ -144,7 +144,7 @@ public class MessageDataBase {
     }
 
 
-    public ArrayList<Message> getMessages(String author, String tag, int sinceId, int limit) {
+    public synchronized ArrayList<Message> getMessages(String author, String tag, int sinceId, int limit) {
         ArrayList<Message> messages = getMessages();
 
         //author
@@ -189,7 +189,7 @@ public class MessageDataBase {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public boolean hasAuthor(String author) {
+    public synchronized boolean hasAuthor(String author) {
         return userMessages.containsKey(author);
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

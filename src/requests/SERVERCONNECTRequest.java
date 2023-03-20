@@ -15,6 +15,11 @@ public class SERVERCONNECTRequest extends Request {
 
     @Override
     public boolean checkFormat() {
+        if (getParameterFormat().length != 0) {
+            setInvalidRequest(true);
+            return false;
+        }
+        setResponse("ERROR",  "Invalid Request Format");
         setResponse("OK", "");
         return true;
     }

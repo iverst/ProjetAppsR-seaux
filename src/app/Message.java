@@ -60,7 +60,7 @@ public class Message {
     public String getHeader() {
         String header = "MSG author:" + getUser() + " msg_id:" + getId();
         if (getReplyTo() != -1) {
-            header = header + " reply_to_id:id";
+            header = header + " reply_to_id:" + getReplyTo();
         }
         header = header + " republished:" + isRepublished();
         return header;

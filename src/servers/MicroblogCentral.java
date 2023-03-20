@@ -69,16 +69,7 @@ class ClientHandlerMicroblogCentral extends Thread {
             //reception message
             while (true) {
                 String messageReceived = "";
-                /*
 
-                if (isConnected) {
-                    messageReceived = in.readLine();
-                }
-                else if (in.ready()) {
-                    messageReceived = in.readLine();
-                }
-
-                 */
                 do {
                     if (in.ready()) {
                         messageReceived = in.readLine();
@@ -117,9 +108,7 @@ class ClientHandlerMicroblogCentral extends Thread {
 
                     } else if (messageReceived.startsWith("SUBSCRIBE") && request.getResponse().startsWith("OK")) {
                         if (isConnected) {
-                            System.out.println("flag2");
                             System.out.println("Subscribe to " + messageReceived);
-                            System.out.println("flag3");
 
                             SUBSCRIBERequest subscriberRequest = (SUBSCRIBERequest) request;
                             subscriberRequest.setQueue(queue);
@@ -197,16 +186,20 @@ class ConnectionHandler extends Thread {
 
     @Override
     public void run() {
-        while(true) {
-           if (! queue.isEmpty()) {
-               Message message;
-               System.out.println(queue);
-               message = queue.poll().clone();
-               String response = RequestMaker.getRequest(message.getHeader(), message.getContent());
-               System.out.println(response);
-               out.print(response);
-               out.flush();
-           }
+        try {
+            while (true) {
+                if (!queue.isEmpty()) {
+                    Message message;
+                    message = queue.poll().clone();
+                    String response = RequestMaker.getRequest(message.getHeader(), message.getContent());
+                    System.out.println(response);
+                    out.print(response);
+                    out.flush();
+                }
+            }
+        }
+        catch (Exception e) {
+
         }
     }
 

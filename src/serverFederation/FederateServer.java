@@ -128,9 +128,7 @@ class ClientHandlerMicroblogCentral extends Thread {
                     //Connection case
                     if (messageReceived.startsWith("CONNECT") && request.getResponse().startsWith("OK")) {
                         System.out.println("Connection establish with :" + socket.getInetAddress());
-                        Thread thread = new ConnectionHandler(queue, socket);
-                        thread.start();
-                        executor.execute(thread);
+                        executor.execute(new ConnectionHandler(queue, socket));
                         isConnected = true;
                         //queue.add(new Message(request.getResponse(), 499));
 

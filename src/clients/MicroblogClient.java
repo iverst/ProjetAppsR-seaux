@@ -131,7 +131,7 @@ public class MicroblogClient extends Client {
     //////////////////////////////////////////////////////////////////////////////////////////
 
     public static void main(String[] args) {
-        MicroblogClient client = new MicroblogClient("localhost", 12345);
+        MicroblogClient client = new MicroblogClient("localhost", 12346);
         client.run();
     }
 }

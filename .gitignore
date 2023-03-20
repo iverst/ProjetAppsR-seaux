@@ -3,3 +3,5 @@
 out/
 *.txt
 src/Test/
+*.pdf
+*.cfg

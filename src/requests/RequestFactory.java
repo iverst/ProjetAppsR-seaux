@@ -26,9 +26,6 @@ public class RequestFactory {
         else if(request.startsWith("CONNECT")) {
             return new CONNECTRequest(request);
         }
-        else if(request.startsWith("SERVERCONNECT")) {
-            return new SERVERCONNECTRequest(request);
-        }
         else {
             return new NotRecognizedRequest(" ");
         }

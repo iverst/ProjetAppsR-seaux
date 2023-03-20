@@ -2,11 +2,14 @@ package serverFederation;
 
 import app.MessageDataBase;
 import app.Message;
+import app.ServerAddress;
 import app.Subscription;
+import clients.Client;
 import requests.*;
 import servers.Counter;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -14,11 +17,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class MicroblogCentralFederate {
+public class FederateServer {
     public static void main(String[] args) {
-        MicroblogCentralFederate mircoblog = new MicroblogCentralFederate(12345, "localhost");
+
+
+        FederateServer server = new FederateServer(12345, "localhost");
+        server.addConnectedServer("localhost", 12346);
         try {
-            mircoblog.run();
+            server.run();
         }
         catch (IOException io) {
             io.printStackTrace();
@@ -27,22 +33,29 @@ public class MicroblogCentralFederate {
 
     private int port;
     private String address;
+    private ArrayList<ServerAddress> connectedServers = new ArrayList<>();
 
-    public MicroblogCentralFederate(int port, String address) {
+    public FederateServer(int port, String address) {
         this.port = port;
         this.address = address;
     }
 
-    private void run() throws IOException {
+    public void run() throws IOException {
         Executor executor = Executors.newFixedThreadPool(100);
         //initialisation serveur
         ServerSocket serverSocket = new ServerSocket(port);
         while (true) {
-            Thread thread = new ClientHandlerMicroblogCentral(serverSocket.accept(), executor);
-            thread.start();
+            Thread thread = new ClientHandlerMicroblogCentral(serverSocket.accept(), executor, this);
             executor.execute(thread);
         }
+    }
 
+    public void addConnectedServer(String address, int port) {
+        connectedServers.add(new ServerAddress(address, port));
+    }
+
+    public ArrayList<ServerAddress> getConnectedServers() {
+        return connectedServers;
     }
 }
 
@@ -52,11 +65,12 @@ class ClientHandlerMicroblogCentral extends Thread {
     private ConcurrentLinkedQueue<Message> queue = new ConcurrentLinkedQueue<>();
     private Executor executor;
     private boolean isConnected = false;
-    private static ArrayList<Socket> serversSocket = new ArrayList<>();
+    private FederateServer server;
 
-    public ClientHandlerMicroblogCentral(Socket socket, Executor executor) {
+    public ClientHandlerMicroblogCentral(Socket socket, Executor executor, FederateServer server) {
         this.executor = executor;
         this.socket = socket;
+        this.server = server;
         threadNumber = Counter.getInstance().getAndIncrement();
         System.out.println("Thread number :" + threadNumber);
     }
@@ -90,12 +104,26 @@ class ClientHandlerMicroblogCentral extends Thread {
                     System.out.println("Message received :");
                     System.out.println(messageReceived);
 
+                    //si le message debute par serveur connect supprimer le SERVERCONNECT de la requête
+                    //sinon s'il s'agit d'une requête de publication envoyer la requête aux autres serveurs connectés
+                    if(messageReceived.startsWith("SERVERCONNECT")) {
+                        //"SERVERCONNECT".length() + 1 =
+                        messageReceived = messageReceived.substring(14);
+                    }
+                    else {
+                        if(messageReceived.startsWith("PUBLISH") || messageReceived.startsWith("REPLY") || messageReceived.startsWith("REPUBLISH")) {
+                            String newRequest = "SERVERCONNECT " + messageReceived;
+                            for (ServerAddress address : server.getConnectedServers()) {
+                                executor.execute(new RequestSender(address, newRequest));
+                            }
+                        }
+                    }
+
                     //interprétation requete
                     RequestFactory requestFactory = new RequestFactory();
 
 
                     Request request = requestFactory.createsRequest(messageReceived);
-
 
                     //Connection case
                     if (messageReceived.startsWith("CONNECT") && request.getResponse().startsWith("OK")) {
@@ -154,8 +182,7 @@ class ClientHandlerMicroblogCentral extends Thread {
                         System.out.println(request.getResponse());
                         System.out.println(MessageDataBase.getInstance().getMessages());
                         System.out.println(Subscription.getInstance());
-                        this.stop();
-                        return;
+                        break;
                     }
 
                     System.out.println("---------------------------------------");
@@ -205,5 +232,20 @@ class ConnectionHandler extends Thread {
         catch (Exception e) {
 
         }
+    }
+}
+
+class RequestSender extends Thread {
+    private String request;
+    private Client client;
+
+    public RequestSender(ServerAddress address, String request) {
+        this.request = request;
+        this.client = new Client(address.getAddress(), address.getPort());
+    }
+
+    @Override
+    public void run() {
+        client.sendRequest(request);
     }
 }

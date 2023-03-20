@@ -1,20 +1,22 @@
-package servers;
+package serverFederation;
 
 import app.MessageDataBase;
 import app.Message;
 import app.Subscription;
 import requests.*;
+import servers.Counter;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-public class MicroblogCentral {
+public class MicroblogCentralFederate {
     public static void main(String[] args) {
-        MicroblogCentral mircoblog = new MicroblogCentral(12345, "localhost");
+        MicroblogCentralFederate mircoblog = new MicroblogCentralFederate(12345, "localhost");
         try {
             mircoblog.run();
         }
@@ -26,7 +28,7 @@ public class MicroblogCentral {
     private int port;
     private String address;
 
-    public MicroblogCentral(int port, String address) {
+    public MicroblogCentralFederate(int port, String address) {
         this.port = port;
         this.address = address;
     }
@@ -36,7 +38,9 @@ public class MicroblogCentral {
         //initialisation serveur
         ServerSocket serverSocket = new ServerSocket(port);
         while (true) {
-            executor.execute(new ClientHandlerMicroblogCentral(serverSocket.accept(), executor));
+            Thread thread = new ClientHandlerMicroblogCentral(serverSocket.accept(), executor);
+            thread.start();
+            executor.execute(thread);
         }
 
     }
@@ -48,6 +52,7 @@ class ClientHandlerMicroblogCentral extends Thread {
     private ConcurrentLinkedQueue<Message> queue = new ConcurrentLinkedQueue<>();
     private Executor executor;
     private boolean isConnected = false;
+    private static ArrayList<Socket> serversSocket = new ArrayList<>();
 
     public ClientHandlerMicroblogCentral(Socket socket, Executor executor) {
         this.executor = executor;
@@ -75,8 +80,8 @@ class ClientHandlerMicroblogCentral extends Thread {
                 } while (messageReceived == null || messageReceived.length() < 1);
 
 
-                    String newLine = in.readLine();
-                    messageReceived = messageReceived + "\r\n" + newLine + "\r\n";
+                String newLine = in.readLine();
+                messageReceived = messageReceived + "\r\n" + newLine + "\r\n";
 
 
 
@@ -149,7 +154,8 @@ class ClientHandlerMicroblogCentral extends Thread {
                         System.out.println(request.getResponse());
                         System.out.println(MessageDataBase.getInstance().getMessages());
                         System.out.println(Subscription.getInstance());
-                        break;
+                        this.stop();
+                        return;
                     }
 
                     System.out.println("---------------------------------------");
@@ -200,6 +206,4 @@ class ConnectionHandler extends Thread {
 
         }
     }
-
-
 }

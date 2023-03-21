@@ -1,6 +1,8 @@
 package serverFederation;
 
+import app.PropertiesGetter;
 import app.ServerAddress;
+import requests.RequestMaker;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -10,7 +12,18 @@ import java.util.concurrent.Executors;
 
 public class Peer {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        if (args.length != 1) {
+            throw new Exception("Incorrect Number of arguments");
+        }
+        String fileName = "pairs.cfg";
+        String[] properties  = PropertiesGetter.getProperty(fileName, "peer" + args[0]).split(" ");
+        int port = Integer.parseInt(properties[1]);
+        String address = properties[0];
+
+        String[] masterProperties = PropertiesGetter.getProperty(fileName, "master").split(" ");
+        ServerAddress masterAddress = new ServerAddress(masterProperties[0], Integer.parseInt(masterProperties[1]));
+
         Peer peer = new Peer(12346, "localhost", new ServerAddress("localhost", 12345));
         try {
             peer.run();
@@ -46,6 +59,7 @@ class ClientHandlerPeer extends Thread {
     private Socket socket, masterSocket;
     private Executor executor;
     private ServerAddress master;
+    private boolean isConnected =  false;
 
     public ClientHandlerPeer(Socket socket, Executor executor, ServerAddress master) throws IOException {
         this.socket = socket;
@@ -64,43 +78,49 @@ class ClientHandlerPeer extends Thread {
             BufferedReader inMaster = new BufferedReader(new InputStreamReader(masterSocket.getInputStream()));
             PrintWriter outMaster = new PrintWriter(new OutputStreamWriter(masterSocket.getOutputStream()));
 
-            //receive a message from a client
-            //and send it to the master
-            String messageReceived = "";
+            while (true) {
+                //receive a message from a client
+                //and send it to the master
+                String messageReceived = "";
 
-            do {
-                if (in.ready()) {
-                    messageReceived = in.readLine();
-                }
-            } while (messageReceived == null || messageReceived.length() < 1);
-            String newLine = in.readLine();
-            messageReceived = messageReceived + "\r\n" + newLine + "\r\n";
-
-            if (messageReceived != null && messageReceived.length() != 0) {
-                System.out.println("sent :");
-                System.out.println(messageReceived);
-                outMaster.println(messageReceived);
-                outMaster.flush();
-
-                //receive a message from the master
-                //and send it back to the client
-
-                String response = "";
                 do {
-                    if (inMaster.ready()) {
-                        response = inMaster.readLine();
+                    if (in.ready()) {
+                        messageReceived = in.readLine();
                     }
-                } while (response == null || response.length() < 1);
+                } while (messageReceived == null || messageReceived.length() < 1);
+                String newLine = in.readLine();
+                messageReceived = messageReceived + "\r\n" + newLine + "\r\n";
 
-                response = response + "\r\n" + inMaster.readLine() + "\r\n";
+                if (messageReceived != null && messageReceived.length() != 0) {
+                    System.out.println("sent :");
+                    System.out.println(messageReceived);
+                    outMaster.println(messageReceived);
+                    outMaster.flush();
+
+                    //receive a message from the master
+                    //and send it back to the client
+                    String response = "";
+                    do {
+                        if (inMaster.ready()) {
+                            response = inMaster.readLine();
+                        }
+                    } while (response == null || response.length() < 1);
+
+                    response = response + "\r\n" + inMaster.readLine() + "\r\n";
 
 
-                System.out.println("Response");
-                System.out.println(response);
-                out.println(response);
-                out.flush();
-                if (messageReceived.startsWith("CONNECT") && response.startsWith("OK")) {
-                    executor.execute(new PeerConnectionHandler(socket, masterSocket));
+                    System.out.println("request to master :");
+                    System.out.print(response);
+                    out.println(response);
+                    out.flush();
+
+                    if (messageReceived.startsWith("CONNECT") && response.startsWith("OK")) {
+                        executor.execute(new PeerConnectionHandler(out, inMaster));
+                        isConnected = true;
+                    }
+                    if(! isConnected) {
+                        socket.close();
+                    }
                 }
             }
         }
@@ -111,21 +131,13 @@ class ClientHandlerPeer extends Thread {
 }
 
 class PeerConnectionHandler extends Thread {
-    private Socket socket, masterSocket;
     private PrintWriter out;
     private BufferedReader in;
 
-    public PeerConnectionHandler(Socket socket, Socket masterSocket) {
-        System.out.println("New subscription");
-        this.socket = socket;
-        this.masterSocket = masterSocket;
-        try {
-            out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-            in = new BufferedReader(new InputStreamReader(masterSocket.getInputStream()));
-        }
-        catch (IOException io) {
-            io.printStackTrace();
-        }
+    public PeerConnectionHandler(PrintWriter out, BufferedReader in) {
+        System.out.println("New Connection");
+        this.out = out;
+        this.in = in;
     }
 
 
@@ -133,12 +145,17 @@ class PeerConnectionHandler extends Thread {
     public void run() {
         try{
         while (true) {
-                    String message = "";
-                    message += in.readLine() + "\n\n";
-                    message += in.readLine() + "\n\n";
-                    System.out.println("Message to sub " + message);
-                    out.println(message);
-                    out.flush();
+            /*
+                        String message = "";
+                        message += in.readLine() + "\n\n";
+                        message += in.readLine() + "\n\n";
+
+             */
+                        String response = RequestMaker.getRequest(in.readLine(), in.readLine());
+                        System.out.println("Message to sub " + response);
+                        out.println(response);
+                        out.flush();
+
             }
         }
         catch (IOException io) {

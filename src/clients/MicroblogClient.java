@@ -8,6 +8,11 @@ import java.util.Scanner;
 
 public class MicroblogClient extends Client {
 
+    public static void main(String[] args) {
+        MicroblogClient client = new MicroblogClient("localhost", 12346);
+        client.run();
+    }
+
     private boolean isConnected = false;
     private String name;
     private Scanner scanner = new Scanner(System.in);
@@ -129,11 +134,6 @@ public class MicroblogClient extends Client {
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////
-
-    public static void main(String[] args) {
-        MicroblogClient client = new MicroblogClient("localhost", 12345);
-        client.run();
-    }
 }
 
 class Listener extends Thread {
@@ -149,6 +149,9 @@ class Listener extends Thread {
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             while (true) {
+                if (socket.isClosed()) {
+                    return;
+                }
                 messageNumber++;
                 String message = "";
                 message += in.readLine() + "\n";
@@ -158,7 +161,6 @@ class Listener extends Thread {
                     System.out.println(message);
                     return;
                 }
-                System.out.println("Message number" + messageNumber);
                 System.out.println(message);
             }
 

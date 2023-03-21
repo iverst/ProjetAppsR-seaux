@@ -9,7 +9,6 @@ import java.io.IOException;
 public class Master {
 
     public static void main(String[] args) {
-        int filePosition;
         String fileName = "pairs.cfg";
 
         String[] properties  = PropertiesGetter.getProperty(fileName, "master").split(" ");

@@ -45,8 +45,7 @@ public class FederateServer {
         //initialisation serveur
         ServerSocket serverSocket = new ServerSocket(port);
         while (true) {
-            Thread thread = new ClientHandlerMicroblogCentral(serverSocket.accept(), executor, this);
-            executor.execute(thread);
+            executor.execute(new ClientHandlerMicroblogCentral(serverSocket.accept(), executor, this));
         }
     }
 

@@ -31,7 +31,7 @@ public class MicroblogCentral {
         this.address = address;
     }
 
-    private void run() throws IOException {
+    public void run() throws IOException {
         Executor executor = Executors.newFixedThreadPool(100);
         //initialisation serveur
         ServerSocket serverSocket = new ServerSocket(port);
@@ -64,6 +64,8 @@ class ClientHandlerMicroblogCentral extends Thread {
             PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
             System.out.println("client connecte");
 
+            System.out.println(socket.getInetAddress());
+            System.out.println(socket.getPort());
             //reception message
             while (true) {
                 String messageReceived = "";

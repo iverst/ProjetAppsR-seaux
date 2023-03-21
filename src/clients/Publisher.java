@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class Publisher extends Client {
     public static void main(String[] args) {
-        Client publisher = new Publisher("localhost", 12346);
+        Client publisher = new Publisher("localhost", 12352);
         publisher.run();
     }
 

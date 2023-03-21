@@ -24,7 +24,7 @@ public class Peer {
         String[] masterProperties = PropertiesGetter.getProperty(fileName, "master").split(" ");
         ServerAddress masterAddress = new ServerAddress(masterProperties[0], Integer.parseInt(masterProperties[1]));
 
-        Peer peer = new Peer(12346, "localhost", new ServerAddress("localhost", 12345));
+        Peer peer = new Peer(Integer.parseInt(properties[1]), properties[0], new ServerAddress(masterProperties[0], Integer.parseInt(masterProperties[1])));
         try {
             peer.run();
         }
